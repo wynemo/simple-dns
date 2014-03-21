@@ -23,7 +23,7 @@ class Encoder(SocketServer.DatagramRequestHandler):
         with lock:
             ssl_socket.send(data)
             data = ssl_socket.recv(64*1024)
-        sock.sendto(data[:-2], self.client_address)
+        sock.sendto(data, self.client_address)
 
 
 def main():
