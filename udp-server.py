@@ -9,16 +9,16 @@ UDP_IP = "127.0.0.1"
 UDP_PORT = 53
 
 
-class SSlSocketServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+class SSlSocketServer(SocketServer.ThreadingTCPServer):
     def get_request(self):
-        newsocket, fromaddr = self.socket.accept()
-        connstream = ssl.wrap_socket(
-            newsocket,
+        new_socket, from_addr = self.socket.accept()
+        conn_stream = ssl.wrap_socket(
+            new_socket,
             server_side=True,
             certfile="cacert.pem",
             keyfile="privkey.pem",
             ssl_version=ssl.PROTOCOL_TLSv1)
-        return connstream, fromaddr
+        return conn_stream, from_addr
 
 
 class Decoder(SocketServer.StreamRequestHandler):
