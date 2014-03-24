@@ -16,6 +16,13 @@ on your remote server run::
 on your local machine run::
 
     python -B client.py
+    
+test
+----
+
+::
+
+    nslookup google.com 127.0.0.1
 
 
 win7 set localhost dns
