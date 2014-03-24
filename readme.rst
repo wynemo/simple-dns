@@ -11,11 +11,11 @@ change **server-ip** in config.json to your remote server ip
 
 on your remote server run::
 
-    python -B udp-server.py
+    python -B server.py
 
 on your local machine run::
 
-    python -B udp-client.py
+    python -B client.py
 
 
 win7 set localhost dns
