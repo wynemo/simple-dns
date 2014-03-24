@@ -1,0 +1,11 @@
+{
+    "client": {
+        "server-ip": "",
+        "listen-ip": "127.0.0.1",
+        "listen-port": 53
+    },
+    "server": {
+        "listen-port": 63235,
+        "real-dns-server": "8.8.8.8"
+    }
+}

@@ -3,13 +3,14 @@
 
 import socket
 import SocketServer
-import logging
 import ssl
 import threading
 import random
+import json
 
 ssl_sockets = []
 CONNECTION_NUM = 5
+CONFIG_FILE = 'config.json'
 
 
 class Encoder(SocketServer.DatagramRequestHandler):
@@ -17,7 +18,7 @@ class Encoder(SocketServer.DatagramRequestHandler):
     def handle(self):
         global ssl_sockets
         random.seed()
-        i = random.randint(0, CONNECTION_NUM)
+        i = random.randint(0, CONNECTION_NUM - 1)
         ssl_socket, lock = ssl_sockets[i]
         data, sock = self.request
         with lock:
@@ -28,21 +29,25 @@ class Encoder(SocketServer.DatagramRequestHandler):
 
 def main():
     global ssl_sockets
-    level = logging.INFO
-    logging.basicConfig(
-        format='%(asctime)s [%(levelname)s] %(message)s',
-        datefmt='%m/%d/%Y %I:%M:%S %p',
-        level=level)
 
-    for i in xrange(0, CONNECTION_NUM + 1):
-        remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        ssl_socket = ssl.wrap_socket(remote, ssl_version=ssl.PROTOCOL_TLSv1)
-        l = ('198.58.115.107', 63235)
-        ssl_socket.connect(l)
-        ssl_sockets.append((ssl_socket, threading.RLock()))
+    with open(CONFIG_FILE, 'rb') as f:
+        o = json.load(f)
+        f.close()
+        server_ip = o['client']['server-ip']
+        server_port = o['server']['listen-port']
+        listen_ip = o['client']['listen-ip']
+        listen_port = o['client']['listen-port']
+        
+    
+        for i in xrange(0, CONNECTION_NUM):
+            remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ssl_socket = ssl.wrap_socket(remote, ssl_version=ssl.PROTOCOL_TLSv1)
+            l = (server_ip, server_port)
+            ssl_socket.connect(l)
+            ssl_sockets.append((ssl_socket, threading.RLock()))
 
-    server = SocketServer.ThreadingUDPServer(('0.0.0.0', 53), Encoder)
-    server.serve_forever()
+        server = SocketServer.ThreadingUDPServer((listen_ip, listen_port), Encoder)
+        server.serve_forever()
 
 if __name__ == '__main__':
     main()

@@ -4,9 +4,11 @@
 import ssl
 import socket
 import SocketServer
+import json
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 53
+DNS_SERVER = ""
+DNS_PORT = 53
+CONFIG_FILE = 'config.json'
 
 
 class SSlSocketServer(SocketServer.ThreadingTCPServer):
@@ -24,10 +26,11 @@ class SSlSocketServer(SocketServer.ThreadingTCPServer):
 class Decoder(SocketServer.StreamRequestHandler):
     @staticmethod
     def handle_tcp(sock, remote):
+        global DNS_SERVER
         while 1:
             data = sock.recv(64*1024)
             if data:
-                remote.sendto(data, (UDP_IP, UDP_PORT))
+                remote.sendto(data, (DNS_SERVER, DNS_PORT))
                 new_data, addr = remote.recvfrom(64*1024)
                 sock.send(new_data)
             else:
@@ -39,8 +42,14 @@ class Decoder(SocketServer.StreamRequestHandler):
 
 
 def main():
-    server = SSlSocketServer(('0.0.0.0', 63235), Decoder)
-    server.serve_forever()
+    global DNS_SERVER
+    with open(CONFIG_FILE, 'rb') as f:
+        o = json.load(f)
+        f.close()
+        DNS_SERVER = o['server']['real-dns-server']
+        listen_port = o['server']['listen-port']
+        server = SSlSocketServer(('0.0.0.0', listen_port), Decoder)
+        server.serve_forever()
 
 if __name__ == '__main__':
     main()
