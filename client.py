@@ -15,6 +15,7 @@ CONFIG_FILE = 'config.json'
 server_ip = None
 server_port = None
 
+
 class Encoder(SocketServer.DatagramRequestHandler):
     
     def handle(self):
@@ -54,7 +55,6 @@ def main():
         listen_ip = o['client']['listen-ip']
         listen_port = o['client']['listen-port']
         
-    
         for i in xrange(0, CONNECTION_NUM):
             remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             ssl_socket = ssl.wrap_socket(remote, ssl_version=ssl.PROTOCOL_TLSv1)
