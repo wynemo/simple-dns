@@ -1,0 +1,6 @@
+{
+    "local_ip": "127.0.0.1",
+    "local_port": 53,
+    "remote_ip": "your_server_ip",
+    "remote_port": 60053
+}
