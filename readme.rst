@@ -19,7 +19,7 @@ change **remote_ip** in config.json.local to your remote server ip 改一下这�
 
 on your remote server run, 远程机器::
 
-    python server.py config.json.remote
+    python dns-client.py config.json.remote
 
 on your local machine run, 本机::
 
